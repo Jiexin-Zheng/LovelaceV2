@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,700italic%26subset=latin,latin-ext">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <title> A prototype lecture page with content management tools </title>
+  </head>
+  <body>
+    <div id="container">
+	  <header class="top-header">
+	    <div id="container-top">
+          <div class="page-title">
+            <h1>Lovelace</h1>
+          </div>
+		</div>
+      </header>
+	  <section class="content">
+        <p>KONAA KORNEER KONAAA</p>
+      </section>
+            {% block top-nav-bar %}
+      <nav class="breadcrumb">
+        <div class="top-nav-container">
+        <ul>
+          {% block breadcrumb-links %}
+          
+          {% endblock %}
+        </ul>
+        <div class="right-side">
+          <div class="vertical-separator"></div>
+          <a onclick="$('div.toc-box').toggle();" style="cursor:pointer;">
+            <img src="{% static 'courses/toc.png' %}" title="{% trans 'Table of Contents' %}">
+          </a>
+          <div class="vertical-separator"></div>
+          {# https://docs.djangoproject.com/en/1.9/topics/i18n/translation/#set-language-redirect-view #}
+          <form action="{% url 'set_language' %}" method="post" class="language-picker">
+            {% csrf_token %}            
+            <input name="next" type="hidden" value="{{ redirect_to }}">
+            <select name="language" onchange="this.form.submit();">
+              {% get_current_language as LANGUAGE_CODE %}
+              {% get_available_languages as LANGUAGES %}
+              {% get_language_info_list for LANGUAGES as languages %}
+              {% for language in languages %}
+                <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected="selected"{% endif %}>
+                  {{ language.name_local }} ({{ language.code }})
+                </option>
+              {% endfor %}
+            </select>
+          </form>
+          {% if course_staff %}
+            <div class="vertical-separator"></div>
+            <button type="button"
+                    class="nav-bar-button"
+                    title="{% trans 'Toggle between student and staff view' %}"
+                    onclick="toggle_staff_widgets(event, this);"
+            >{% trans 'staff view' %}</button>
+          {% endif %}          
+        </div>
+        </div>
+      </nav>
+      {% endblock %}
+    </div>
+  </body>
+</html>

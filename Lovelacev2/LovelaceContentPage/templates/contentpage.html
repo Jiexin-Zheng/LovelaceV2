@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,700,700italic%26subset=latin,latin-ext">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inconsolata">
+    <link rel="stylesheet" href="{% static 'contentpage/style.css' %}">
+	<script src="{% static 'contentpage/adminbutton.js' %}"></script>   
+    <title> A prototype lecture page with content management tools </title>
+  </head>
+  <body>
+    <div id="container">
+	  <header class="top-header">
+	    <div id="container-top">
+          <div class="page-title">
+            <h1>Lovelace</h1>
+          </div>
+		  <button class="admintogglebutton" onclick="AdminToggle()">
+		  </button>
+		</div>
+      </header>
+	  <section class="content">
+	        {% for ContentObject in List %}
+				<div class="slotforcontent" id="adminOnly" style="display: none;">
+                        <button class="addbutton" onclick="EditToggle({{ forloop.counter0 }})"> 
+		                </button>	
+				</div>			
+                <div class="pieceofcontent">
+				    <div class="pieceofcontent-admin" id="adminOnly" style="display: none;">
+					    <button class="deletebutton" onclick="DeleteContent({{ forloop.counter0 }})"> 
+		                </button>	
+					    <form action="" method="post" id="DeletionForm">
+							{% csrf_token %}
+				            <div class="deleteinputform" style="display:none;">
+                            {{ deleteform.IndexToBeDeleted }}
+					        </div>		
+                            <input type="submit" value="Submit" style="display:none;">	
+                        </form>						
+					</div>
+					<div class="pieceofcontent-everyone">
+					{%if ContentObject.ContentHeader != "NoHeader" %}
+					<h1>
+					{{ContentObject.ContentHeader}}
+					</h1>
+					{% endif %}
+					{%if ContentObject.ContentText != "NoText" %}
+					<p>
+					{{ContentObject.ContentText}}
+					</p>
+					{% endif %}
+					{%if ContentObject.ContentImageTitle != "NoTitle" %}
+					<h1>
+					{{ContentObject.ContentImageTitle}}
+					</h1>
+					{% endif %}
+					{%if ContentObject.ContentImageFile != "NoFile" %}
+					<img src="{{ContentObject.ContentImageFile.url}}" alt="ImageMissing">
+					{% endif %}					
+					</div>
+			    </div>
+            {% endfor %}
+		    <div class="slotforcontent" id="adminOnly" style="display: none;">
+                <button class="addbutton" onclick="EditToggle({{ indexnumber }})"> 
+		        </button>	
+		    </div>			
+	        <section class="formforcontent" id="formforcontent" style="display: none;" title="0" >
+	              <h1> Add content to your selected position.</h1>
+				  <div>
+                  <button class="texteditbutton" onclick="FormForContentToggle(textform)" >
+		          </button>	
+				  <button class="imageeditbutton" onclick="FormForContentToggle(imageform)" >
+		          </button>	
+			      </div>
+				  <form action="" method="post" id="textform" style="display: none;">
+				      {% csrf_token %}
+				      <div class="headerinput">
+					  <label for="header_input" class="headerinputlabel"> Header: </label>
+                      {{ textform.header_input }}
+					  </div>
+				      <div class="textinput">
+					  <label for="text_input" class="textinputlabel"> Paragraph: </label>
+                      {{ textform.text_input }}
+					  </div>
+				      <div class="indexinput">
+					  <label for="index_input" class="indexinputlabel"> Index of content: </label>
+                      {{ textform.index_input }}
+					  </div>
+                      <input type="submit" value="Submit">
+					  <p id = "currentindex"> {{ forloop.counter0 }} </p>
+                   </form>
+				  <form action="" method="POST" enctype="multipart/form-data" id="imageform" style="display: none;">
+				      {% csrf_token %}
+				      <div class="imagetitleinput">
+					  <label for="imagetitle" class="imagetitlelabel"> Image title: </label>
+                      {{ imagefileform.imagetitle }}
+					  </div>
+				      <div class="imagefileinput">
+					  <label for="imagefile" class="imagefilelabel"> Image file: </label>
+                      {{ imagefileform.imagefile }}
+					  </div>
+				      <div class="indexinput">
+					  <label for="image_index" class="indexinputlabel"> Index of content: </label>
+                      {{ imagefileform.image_index }}
+					  </div>
+					  <input type="submit" value="Submit">
+                  </form>
+	        </section>
+      </section>
+      {% block top-nav-bar %}
+      <nav class="breadcrumb">
+        <div class="top-nav-container">
+        </div>
+      </nav>
+      {% endblock %}
+    </div>
+  </body>
+</html>
