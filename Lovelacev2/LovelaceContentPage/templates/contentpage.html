@@ -17,17 +17,17 @@
           <div class="page-title">
             <h1>Lovelace</h1>
           </div>
-		  <button class="admintogglebutton" onclick="AdminToggle()">
+		  <button class="admintogglebutton" onclick="AdminToggle()"> <!-- The cog in top right to change to admin mode -->
 		  </button>
 		</div>
       </header>
 	  <section class="content">
-	        {% for ContentObject in List %}
-				<div class="slotforcontent" id="adminOnly" style="display: none;">
+	        {% for ContentObject in List %} <!-- This for loop loops through the list from views.py file, and shows the content on the page in order of index -->
+				<div class="slotforcontent" id="adminOnly" style="display: none;"> <!-- slotforcontent is the darker blank area with + sign on the left -->
                         <button class="addbutton" onclick="EditToggle({{ forloop.counter0 }})"> 
 		                </button>	
 				</div>			
-                <div class="pieceofcontent">
+                <div class="pieceofcontent"> <!-- pieceofcontent contains the content, and the deletion button for the content which is only rendered if admin mode is on-->
 				    <div class="pieceofcontent-admin" id="adminOnly" style="display: none;">
 					    <button class="deletebutton" onclick="DeleteContent({{ forloop.counter0 }})"> 
 		                </button>	
@@ -39,7 +39,7 @@
                             <input type="submit" value="Submit" style="display:none;">	
                         </form>						
 					</div>
-					<div class="pieceofcontent-everyone">
+					<div class="pieceofcontent-everyone"> <!-- This part renders the piece of content from the list that is currently contained in ContentObject of the for loop. The way the content is rendered is handled with if statements, for example if its image content then in the  current implementation the ContentText field of ContentObject will be "NoText" which means the if statement will be false, thus for image content no text is rendered-->
 					{%if ContentObject.ContentHeader != "NoHeader" %}
 					<h1>
 					{{ContentObject.ContentHeader}}
@@ -61,19 +61,19 @@
 					</div>
 			    </div>
             {% endfor %}
-		    <div class="slotforcontent" id="adminOnly" style="display: none;">
+		    <div class="slotforcontent" id="adminOnly" style="display: none;"> <!-- The final slot for content after the for loop -->
                 <button class="addbutton" onclick="EditToggle({{ indexnumber }})"> 
 		        </button>	
 		    </div>			
-	        <section class="formforcontent" id="formforcontent" style="display: none;" title="0" >
+	        <section class="formforcontent" id="formforcontent" style="display: none;" title="0" > <!-- the pop-up that opens when you press the plus sign-->
 	              <h1> Add content to your selected position.</h1>
 				  <div>
-                  <button class="texteditbutton" onclick="FormForContentToggle(textform)" >
+                  <button class="texteditbutton" onclick="FormForContentToggle(textform)" > <!-- The selection buttons T/I, for image or text, new selection button for embedded content should be added -->
 		          </button>	
 				  <button class="imageeditbutton" onclick="FormForContentToggle(imageform)" >
 		          </button>	
 			      </div>
-				  <form action="" method="post" id="textform" style="display: none;">
+				  <form action="" method="post" id="textform" style="display: none;"> <!-- textform, visible only if image mode is not selected -->
 				      {% csrf_token %}
 				      <div class="headerinput">
 					  <label for="header_input" class="headerinputlabel"> Header: </label>
@@ -90,7 +90,7 @@
                       <input type="submit" value="Submit">
 					  <p id = "currentindex"> {{ forloop.counter0 }} </p>
                    </form>
-				  <form action="" method="POST" enctype="multipart/form-data" id="imageform" style="display: none;">
+				  <form action="" method="POST" enctype="multipart/form-data" id="imageform" style="display: none;"> <!-- imageform, visible only if text is not selected -->
 				      {% csrf_token %}
 				      <div class="imagetitleinput">
 					  <label for="imagetitle" class="imagetitlelabel"> Image title: </label>

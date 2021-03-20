@@ -16,6 +16,8 @@ function AdminToggle() {
 	}
 	}
 }
+//AdminToggle handles opening and closing the editing options
+
 
 function EditToggle(index) {	
     console.log(index)
@@ -31,13 +33,13 @@ function EditToggle(index) {
 		
 	}
 }
-
+//edittoggle opens the popup with the image and text forms
 function DeleteContent(index) {	
     document.getElementById("id_IndexToBeDeleted").value = index
     console.log(index)
 	document.getElementById("DeletionForm").submit();
 }
-
+//DeleteContent is function that is run when the - sign is pressed. The index parameter gets the value from the html template's for loop. It gets then passed to the deletion form and the deletion form gets automatically submitted by this function, the user doesnt fill anything on the form. 
 function FormForContentToggle(id){
     console.log(id)
     var listoftogglecontent = ["textform", "imageform"];
@@ -51,3 +53,4 @@ function FormForContentToggle(id){
 		}
     }
 }
+//FormForContentToggle is for toggling between image and text forms in the FormForContent in html. if new content types is added, the listoftogglecontent variable should have the new contenttype added to the list.
