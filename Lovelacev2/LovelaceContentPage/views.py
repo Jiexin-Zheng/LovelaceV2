@@ -5,7 +5,7 @@ from .forms import TextForm, DeleteForm, ImageFileForm
 from .models import LectureContent
 
 def index(request):
-    List = []
+    List = [] #testikommentti
     List.clear()
     indexnumber = 0
     isBreak = False
