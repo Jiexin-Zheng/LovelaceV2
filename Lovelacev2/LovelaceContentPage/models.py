@@ -4,7 +4,7 @@ from django.contrib.contenttypes.models import ContentType
 
 class LectureContent(models.Model):   # A Database model for the content on the page (Should probably be turned into a parent class with only Parent, index and content type)
     Parent = models.CharField(max_length=100,) # Parent field pointing to the lecture/course that the content is part of
-    Index = models.PositiveIntegerField() # index of the content on the webpage. When the website is printed it goes through for loop and prints the content from index 0 -> 
+    Index = models.PositiveIntegerField() # index of the content on the webpage. When the website is rendered it goes through a for loop and renders the content from index 0 forwards in order.
     ContentType = models.CharField(max_length=100,) #Content type, Would be like image/text/ etc embedded content
 
 class TextContentModel(LectureContent):

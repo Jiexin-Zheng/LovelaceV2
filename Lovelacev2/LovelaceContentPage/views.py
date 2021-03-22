@@ -3,6 +3,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.template import Template, loader, engines
 from .forms import TextForm, DeleteForm, ImageFileForm
 from .models import LectureContent, ImageContentModel, TextContentModel
+import LovelaceContentPage.markupparser as markupparser
+import LovelaceContentPage.blockparser as blockparser
 
 def index(request):
     List = []       #This list will contain all of the content to be rendered on the selected lecture
@@ -24,6 +26,7 @@ def index(request):
         imagefileform = ImageFileForm(request.POST, request.FILES)
         if textform.is_valid(): #if the user sends text content, then this will be true.
             text = textform.cleaned_data["text_input"]
+            text = "".join(markupparser.MarkupParser.parse(text))
             header = textform.cleaned_data["header_input"]
             enteredindex = textform.cleaned_data["index_input"] #the content  from the form must be apparently cleaned, that's why the .cleaned_data is here. enteredindex is the index of the content added.
             for j in SortedLectureContentObjects:  #again, when new content is added, the indexes that are as high or higher must be incremented so that the new content can be added in the middle.

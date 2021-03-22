@@ -9,6 +9,6 @@ class DeleteForm(forms.Form): #A form to delete a piece of content from the webs
     IndexToBeDeleted = forms.IntegerField(initial=100)
 	
 class ImageFileForm(forms.Form): # A form to enter an image to the website
-    imagetitle = forms.CharField(max_length=100)
+    imagetitle = forms.CharField(max_length=100, required=False)
     imagefile = forms.ImageField()
     image_index = forms.IntegerField(initial=100)
