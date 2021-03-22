@@ -40,23 +40,23 @@
                         </form>						
 					</div>
 					<div class="pieceofcontent-everyone"> <!-- This part renders the piece of content from the list that is currently contained in ContentObject of the for loop. The way the content is rendered is handled with if statements, for example if its image content then in the  current implementation the ContentText field of ContentObject will be "NoText" which means the if statement will be false, thus for image content no text is rendered-->
-					{%if ContentObject.ContentHeader != "NoHeader" %}
+					{%if ContentObject.textcontentmodel.ContentHeader %}
 					<h1>
-					{{ContentObject.ContentHeader}}
+					{{ContentObject.textcontentmodel.ContentHeader}}
 					</h1>
 					{% endif %}
-					{%if ContentObject.ContentText != "NoText" %}
+					{%if ContentObject.textcontentmodel.ContentText %}
 					<p>
-					{{ContentObject.ContentText}}
+					{{ContentObject.textcontentmodel.ContentText}}
 					</p>
 					{% endif %}
-					{%if ContentObject.ContentImageTitle != "NoTitle" %}
+					{%if ContentObject.imagecontentmodel.ContentImageTitle %}
 					<h1>
-					{{ContentObject.ContentImageTitle}}
+					{{ContentObject.imagecontentmodel.ContentImageTitle}}
 					</h1>
 					{% endif %}
-					{%if ContentObject.ContentImageFile != "NoFile" %}
-					<img src="{{ContentObject.ContentImageFile.url}}" alt="ImageMissing">
+					{%if ContentObject.imagecontentmodel.ContentImageFile %}
+					<img src="{{ContentObject.imagecontentmodel.ContentImageFile.url}}" alt="ImageMissing">
 					{% endif %}					
 					</div>
 			    </div>
