@@ -56,7 +56,10 @@
 					</h1>
 					{% endif %}
 					{%if ContentObject.imagecontentmodel.ContentImageFile %}
+					<figure>
 					<img src="{{ContentObject.imagecontentmodel.ContentImageFile.url}}" alt="ImageMissing">
+					<figcaption>{{ContentObject.imagecontentmodel.ContentImageCaption}}</figcaption>
+					</figure>
 					{% endif %}					
 					</div>
 			    </div>
@@ -95,6 +98,10 @@
 				      <div class="imagetitleinput">
 					  <label for="imagetitle" class="imagetitlelabel"> Image title: (optional) </label>
                       {{ imagefileform.imagetitle }}
+					  </div>
+				      <div class="imagecaptioninput">
+					  <label for="imagecaption" class="imagecaptionlabel"> Image caption: (optional) </label>
+                      {{ imagefileform.imagecaption }}
 					  </div>
 				      <div class="imagefileinput">
 					  <label for="imagefile" class="imagefilelabel"> Image file: </label>

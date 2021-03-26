@@ -14,6 +14,7 @@ class TextContentModel(LectureContent):
 class ImageContentModel(LectureContent):
     ContentImageTitle = models.CharField(max_length=100,)
     ContentImageFile = models.ImageField(upload_to="static")
+    ContentImageCaption = models.CharField(max_length=100,)
     def __str__(self): #A function that prints the queryset in shell
         string = self.ContentImageTitle + self.ContentImageFile.url
         return(string)

@@ -54,12 +54,13 @@ def index(request):
         elif imagefileform.is_valid():  #basically the same a the text form, just different variables. 
             imagefiletitle = imagefileform.cleaned_data["imagetitle"]		
             imagefile = imagefileform.cleaned_data["imagefile"]	
+            imagecaption = imagefileform.cleaned_data["imagecaption"]
             enteredindex = imagefileform.cleaned_data["image_index"]
             for j in SortedLectureContentObjects:
                 if j.Index >= enteredindex:
                     j.Index += 1
                     j.save()
-            content = ImageContentModel(Parent = "Lecture8", Index = enteredindex, ContentType = "Image", ContentImageTitle = imagefiletitle, ContentImageFile = imagefile)
+            content = ImageContentModel(Parent = "Lecture8", Index = enteredindex, ContentType = "Image", ContentImageTitle = imagefiletitle, ContentImageFile = imagefile, ContentImageCaption = imagecaption)
             content.save()
             print(content)
             return HttpResponseRedirect("/LovelaceContentPage/")  #redirect back to the same page(reload page)
