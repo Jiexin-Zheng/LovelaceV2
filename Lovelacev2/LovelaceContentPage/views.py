@@ -5,13 +5,14 @@ from .forms import TextForm, DeleteForm, ImageFileForm
 from .models import LectureContent, ImageContentModel, TextContentModel
 import LovelaceContentPage.markupparser as markupparser
 import LovelaceContentPage.blockparser as blockparser
+from django.http import JsonResponse
 
 def index(request):
     List = []       #This list will contain all of the content to be rendered on the selected lecture
     List.clear() 
     indexnumber = 0   # index that will hold the max number of separate pieces of content on the website
     isBreak = False # No idea why this is here
-    LectureContentObjects = LectureContent.objects.filter(Parent = "Lecture8")  # LectureContentObjects filters the lecture content from database that belongs to the selected course. In this case the "lecture8" is just an example, in real implementation it would be somehow inherited from the website that you can get to the lecture from.
+    LectureContentObjects = LectureContent.objects.filter(Parent = "Lecture11")  # LectureContentObjects filters the lecture content from database that belongs to the selected course. In this case the "lecture8" is just an example, in real implementation it would be somehow inherited from the website that you can get to the lecture from.
     SortedLectureContentObjects = LectureContentObjects.order_by("Index")  #Sort the lecture specific content based on index so that it gets rendered in correct order.
     for i in SortedLectureContentObjects:    #a for loop that saves all the sorted lecture content into the list in order plus changes the indexes if there are "holes" in the order of them. for example if content with index 2 is deleted then the following indexes must be changed to make it work.
         if i.Index != indexnumber:   #this is the reordering part.
@@ -28,13 +29,19 @@ def index(request):
             text = textform.cleaned_data["text_input"]
             text = "".join(markupparser.MarkupParser.parse(text))
             header = textform.cleaned_data["header_input"]
+            editmode = textform.cleaned_data["EditMode"]
             enteredindex = textform.cleaned_data["index_input"] #the content  from the form must be apparently cleaned, that's why the .cleaned_data is here. enteredindex is the index of the content added.
-            for j in SortedLectureContentObjects:  #again, when new content is added, the indexes that are as high or higher must be incremented so that the new content can be added in the middle.
-                if j.Index >= enteredindex:
-                    j.Index += 1
-                    j.save()
-            content = TextContentModel(Parent = "Lecture8", Index = enteredindex, ContentType = "Text", ContentText = text, ContentHeader = header)
-            content.save() #content is saved into database
+            if editmode == "False":
+                for j in SortedLectureContentObjects:  #again, when new content is added, the indexes that are as high or higher must be incremented so that the new content can be added in the middle.
+                    if j.Index >= enteredindex:
+                        j.Index += 1
+                        j.save()
+                content = TextContentModel(Parent = "Lecture11", Index = enteredindex, ContentType = "Text", ContentText = text, ContentHeader = header)
+                content.save() #content is saved into database
+            if editmode == "True":
+                content = SortedLectureContentObjects.filter(Parent = "Lecture11", Index = enteredindex).delete()
+                newcontent = TextContentModel(Parent = "Lecture11", Index = enteredindex, ContentType = "Text", ContentText = text, ContentHeader = header)
+                newcontent.save() #content is saved into database
             context = { 
                 "List": List,
                 "textform": textform,
@@ -56,13 +63,20 @@ def index(request):
             imagefile = imagefileform.cleaned_data["imagefile"]	
             imagecaption = imagefileform.cleaned_data["imagecaption"]
             enteredindex = imagefileform.cleaned_data["image_index"]
-            for j in SortedLectureContentObjects:
-                if j.Index >= enteredindex:
-                    j.Index += 1
-                    j.save()
-            content = ImageContentModel(Parent = "Lecture8", Index = enteredindex, ContentType = "Image", ContentImageTitle = imagefiletitle, ContentImageFile = imagefile, ContentImageCaption = imagecaption)
-            content.save()
-            print(content)
+            editmodeimage = imagefileform.cleaned_data["EditModeImage"]
+            if editmodeimage == "False":
+                for j in SortedLectureContentObjects:
+                    if j.Index >= enteredindex:
+                        j.Index += 1
+                        j.save()
+                content = ImageContentModel(Parent = "Lecture11", Index = enteredindex, ContentType = "Image", ContentImageTitle = imagefiletitle, ContentImageFile = imagefile, ContentImageCaption = imagecaption)
+                content.save()
+            if editmodeimage == "True":
+                temporaryobj = SortedLectureContentObjects.get(Parent = "Lecture11", Index = enteredindex)
+                tempimagefile = temporaryobj.imagecontentmodel.ContentImageFile
+                SortedLectureContentObjects.filter(Parent = "Lecture11", Index = enteredindex).delete()
+                newcontent = ImageContentModel(Parent = "Lecture11", Index = enteredindex, ContentType = "Image", ContentImageTitle = imagefiletitle, ContentImageFile = tempimagefile, ContentImageCaption = imagecaption)
+                newcontent.save() #content is saved into database
             return HttpResponseRedirect("/LovelaceContentPage/")  #redirect back to the same page(reload page)
     else: #if no forms are sent, then they are just kept empty.
         textform = TextForm()
@@ -73,7 +87,6 @@ def index(request):
         "textform": textform,
         "indexnumber": indexnumber,
 		"deleteform": deleteform,
-		"imagefileform": imagefileform,
+        "imagefileform": imagefileform,
     }
     return HttpResponse(template.render(context, request))
-	

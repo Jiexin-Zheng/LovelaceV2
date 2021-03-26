@@ -786,9 +786,24 @@ div.slotforcontent {
   border-radius: 5px;
 }
 
+.editcontentbutton {
+  background: url("editsign.png");
+  background-position: center;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  opacity: 1.0;
+  position: relative;
+  width: 40px;
+  height: 40px;
+  float: center-left;
+  border-radius: 5px;
+}
+
 .deletebutton {
   background: url("smallminussign.png");
   background-position: center;
+  padding: 5px;
   color: black;
   border: none;
   cursor: pointer;
@@ -796,7 +811,7 @@ div.slotforcontent {
   position: relative;
   width: 40px;
   height: 40px;
-  float: center;
+  float: center-right;
   border-radius: 5px;
 }
 
@@ -849,6 +864,23 @@ div.learningmaterial {
 	left: calc(100vw - 500px);
 	overflow:scroll;
 }
+
+.formforediting {
+    display: initial;
+    height: 80%;
+    width: 500px;
+    top: 100px;
+    position: fixed;
+    z-index: 1;
+    background: #d7d7d7;
+    border:2px;
+    border-style: ridge;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    padding: 5px;
+    left: calc(100vw - 500px);
+    overflow:scroll;
+}
+
 
 .admintogglebutton{
     background: url("admineditsign.png");

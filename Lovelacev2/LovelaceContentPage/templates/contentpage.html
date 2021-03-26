@@ -22,11 +22,15 @@
 		</div>
       </header>
 	  <section class="content">
+            <script type="text/javascript"> 
+                var ContentForJS = [];
+                console.log(ContentForJS)
+            </script>	
 	        {% for ContentObject in List %} <!-- This for loop loops through the list from views.py file, and shows the content on the page in order of index -->
 				<div class="slotforcontent" id="adminOnly" style="display: none;"> <!-- slotforcontent is the darker blank area with + sign on the left -->
                         <button class="addbutton" onclick="EditToggle({{ forloop.counter0 }})"> 
 		                </button>	
-				</div>			
+				</div>
                 <div class="pieceofcontent"> <!-- pieceofcontent contains the content, and the deletion button for the content which is only rendered if admin mode is on-->
 				    <div class="pieceofcontent-admin" id="adminOnly" style="display: none;">
 					    <button class="deletebutton" onclick="DeleteContent({{ forloop.counter0 }})"> 
@@ -37,7 +41,19 @@
                             {{ deleteform.IndexToBeDeleted }}
 					        </div>		
                             <input type="submit" value="Submit" style="display:none;">	
-                        </form>						
+                        </form>			
+                        <script type="text/javascript"> 
+                            ContentForJS.push(["{{ ContentObject.ContentType|striptags|escapejs }}",
+                            	"{{ ContentObject.textcontentmodel.ContentText|striptags|escapejs }}", 
+                            	"{{ ContentObject.textcontentmodel.ContentHeader|striptags|escapejs }}",
+                            	"{{ ContentObject.imagecontentmodel.ContentImageTitle|striptags|escapejs }}",
+								"{{ ContentObject.imagecontentmodel.ContentImageCaption|striptags|escapejs }}",                            	
+								"{{ ContentObject.imagecontentmodel.ContentImageFile|striptags|escapejs }}",
+                            	]);
+                            console.log(ContentForJS)
+                        </script>	
+						<button class="editcontentbutton" onclick="EditContent({{ forloop.counter0}}, ContentForJS)"> 
+	                    </button>
 					</div>
 					<div class="pieceofcontent-everyone"> <!-- This part renders the piece of content from the list that is currently contained in ContentObject of the for loop. The way the content is rendered is handled with if statements, for example if its image content then in the  current implementation the ContentText field of ContentObject will be "NoText" which means the if statement will be false, thus for image content no text is rendered-->
 					{%if ContentObject.textcontentmodel.ContentHeader %}
@@ -90,8 +106,10 @@
 					  <label for="index_input" class="indexinputlabel"> Index of content: </label>
                       {{ textform.index_input }}
 					  </div>
+				      <div class="editmodeinput" style="display: none;">
+                      {{ textform.EditMode }}
+					  </div>		
                       <input type="submit" value="Submit">
-					  <p id = "currentindex"> {{ forloop.counter0 }} </p>
                    </form>
 				  <form action="" method="POST" enctype="multipart/form-data" id="imageform" style="display: none;"> <!-- imageform, visible only if text is not selected -->
 				      {% csrf_token %}
@@ -111,6 +129,9 @@
 					  <label for="image_index" class="indexinputlabel"> Index of content: </label>
                       {{ imagefileform.image_index }}
 					  </div>
+				      <div class="editmodeimageinput" style="display: none;">
+                      {{ imagefileform.EditModeImage }}
+					  </div>		
 					  <input type="submit" value="Submit">
                   </form>
 	        </section>

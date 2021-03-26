@@ -27,19 +27,56 @@ function EditToggle(index) {
 	    currentelement.style.display = "initial";		
 		document.getElementById("id_index_input").value = index
 		document.getElementById("id_image_index").value = index
+		document.getElementById("id_EditMode").value = "False"
+		document.getElementById("id_EditModeImage").value = "False"
 	}
     else {
 		currentelement.style.display = "none";	
 		
 	}
 }
+
+
 //edittoggle opens the popup with the image and text forms
 function DeleteContent(index) {	
     document.getElementById("id_IndexToBeDeleted").value = index
     console.log(index)
 	document.getElementById("DeletionForm").submit();
 }
-//DeleteContent is function that is run when the - sign is pressed. The index parameter gets the value from the html template's for loop. It gets then passed to the deletion form and the deletion form gets automatically submitted by this function, the user doesnt fill anything on the form. 
+//DeleteContent is function that is run when the - sign is pressed. The index parameter gets the value from the html template's for loop. It gets then passed to the deletion form and the deletion form gets automatically submitted by this function, the user doesnt fill anything on the form.
+
+function EditContent(index, ContentArray) {	
+    var ContentToBeEdited = ContentArray[index];
+    console.log(ContentToBeEdited[4])
+    var currentelement = document.getElementById("formforcontent");
+	if(currentelement.style.display === "none"){
+		if(ContentToBeEdited[0] ===  "Text"){
+			document.getElementById("textform").style.display = "initial";
+			document.getElementById("imageform").style.display = "none";
+		}
+		if(ContentToBeEdited[0] ===  "Image"){
+			document.getElementById("imageform").style.display = "initial";
+			document.getElementById("textform").style.display = "none";
+		}
+	    currentelement.style.display = "initial";		
+		document.getElementById("id_index_input").value = index
+		document.getElementById("id_image_index").value = index
+		document.getElementById("id_text_input").value = ContentToBeEdited[1]
+		document.getElementById("id_header_input").value = ContentToBeEdited[2]
+		document.getElementById("id_imagetitle").value = ContentToBeEdited[3]
+		document.getElementById("id_imagecaption").value = ContentToBeEdited[4]
+		document.getElementById("id_EditMode").value = "True"
+		document.getElementById("id_EditModeImage").value = "True"
+	}
+    else {
+		currentelement.style.display = "none";	
+        document.getElementById("textform").style.display = "none";
+        document.getElementById("imageform").style.display = "none";
+        document.getElementById("id_EditMode").value = "False"
+		document.getElementById("id_EditModeImage").value = "False"
+}
+}
+
 function FormForContentToggle(id){
     console.log(id)
     var listoftogglecontent = ["textform", "imageform"];
