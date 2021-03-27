@@ -842,6 +842,21 @@ div.slotforcontent {
   float: center;
   border-radius: 5px;
 }
+
+.fileeditbutton {
+  background: url("embeddedsign.png");
+  background-position: center;
+  color: black;
+  border: none;
+  cursor: pointer;
+  opacity: 1;
+  position: relative;
+  width: 30px;
+  height: 30px;
+  float: center;
+  border-radius: 5px;
+}
+
 div.learningmaterial {
     height: 100%;
     width: 90%;

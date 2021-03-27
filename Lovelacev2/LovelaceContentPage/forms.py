@@ -16,5 +16,12 @@ class ImageFileForm(forms.Form): # A form to enter an image to the website
     image_index = forms.IntegerField(initial=100)
     EditModeImage = forms.CharField(max_length=5, initial="False")
 
-class EditForm(forms.Form): # A form to enter an image to the website
-    IndexToBeEdited = forms.IntegerField(initial=100)
+class EmbeddedFileForm(forms.Form):
+    def __init__(self,*args,**kwargs):
+        Choicelist = kwargs.pop('Choicelist')
+        super(EmbeddedFileForm, self).__init__(*args,**kwargs)
+        self.fields['file'].choices = Choicelist
+    filetitle = forms.CharField(max_length=100, required=False)
+    file = forms.ChoiceField()
+    file_index = forms.IntegerField(initial=100)
+    EditModeFile = forms.CharField(max_length=5, initial="False")

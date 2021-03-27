@@ -18,3 +18,7 @@ class ImageContentModel(LectureContent):
     def __str__(self): #A function that prints the queryset in shell
         string = self.ContentImageTitle + self.ContentImageFile.url
         return(string)
+
+class FileContentModel(LectureContent):
+    ContentFileTitle = models.CharField(max_length=100,)
+    ContentFile = models.CharField(max_length=100,)

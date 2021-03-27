@@ -27,8 +27,10 @@ function EditToggle(index) {
 	    currentelement.style.display = "initial";		
 		document.getElementById("id_index_input").value = index
 		document.getElementById("id_image_index").value = index
+		document.getElementById("id_file_index").value = index
 		document.getElementById("id_EditMode").value = "False"
 		document.getElementById("id_EditModeImage").value = "False"
+		document.getElementById("id_EditModeFile").value = "False"
 	}
     else {
 		currentelement.style.display = "none";	
@@ -53,10 +55,17 @@ function EditContent(index, ContentArray) {
 		if(ContentToBeEdited[0] ===  "Text"){
 			document.getElementById("textform").style.display = "initial";
 			document.getElementById("imageform").style.display = "none";
+			document.getElementById("fileform").style.display = "none";
 		}
 		if(ContentToBeEdited[0] ===  "Image"){
 			document.getElementById("imageform").style.display = "initial";
 			document.getElementById("textform").style.display = "none";
+			document.getElementById("fileform").style.display = "none";
+		}
+		if(ContentToBeEdited[0] ===  "File"){
+			document.getElementById("imageform").style.display = "none";
+			document.getElementById("textform").style.display = "none";
+			document.getElementById("fileform").style.display = "initial";
 		}
 	    currentelement.style.display = "initial";		
 		document.getElementById("id_index_input").value = index
@@ -67,19 +76,22 @@ function EditContent(index, ContentArray) {
 		document.getElementById("id_imagecaption").value = ContentToBeEdited[4]
 		document.getElementById("id_EditMode").value = "True"
 		document.getElementById("id_EditModeImage").value = "True"
+		document.getElementById("id_EditModeFile").value = "True"
 	}
     else {
 		currentelement.style.display = "none";	
         document.getElementById("textform").style.display = "none";
         document.getElementById("imageform").style.display = "none";
+        document.getElementById("fileform").style.display = "none";
         document.getElementById("id_EditMode").value = "False"
 		document.getElementById("id_EditModeImage").value = "False"
+		document.getElementById("id_EditModeFile").value = "False"
 }
 }
 
 function FormForContentToggle(id){
     console.log(id)
-    var listoftogglecontent = ["textform", "imageform"];
+    var listoftogglecontent = ["textform", "imageform", "fileform"];
     var length = listoftogglecontent.length;
 	for (var i = 0; i < length; i++) {
 	    if(listoftogglecontent[i] == id.id){
