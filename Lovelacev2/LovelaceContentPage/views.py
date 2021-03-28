@@ -9,6 +9,7 @@ from django.http import JsonResponse
 import os
 
 def index(request):
+<<<<<<< HEAD
     TemporaryCurrentLecture = "Lecture14"
     List = []       #This list will contain all of the content to be rendered on the selected lecture
     List.clear() 
@@ -22,6 +23,16 @@ def index(request):
     SortedLectureContentObjects = LectureContentObjects.order_by("Index")  #Sort the lecture specific content based on index so that it gets rendered in correct order.
     for i in SortedLectureContentObjects:    #a for loop that saves all the sorted lecture content into the list in order plus changes the indexes if there are "holes" in the order of them. for example if content with index 2 is deleted then the following indexes must be changed to make it work.
         if i.Index != indexnumber:   #this is the reordering part.
+=======
+    List = [] #testikommentti
+    List.clear()
+    indexnumber = 0
+    isBreak = False
+    LectureContentObjects = LectureContent.objects.filter(Parent = "Lecture8")
+    SortedLectureContentObjects = LectureContentObjects.order_by("Index")
+    for i in SortedLectureContentObjects:
+        if i.Index != indexnumber:
+>>>>>>> 51fd0f14d99b4490812a4192fc029b7101953c62
             i.Index = indexnumber
             i.save()
         List.append(i)
