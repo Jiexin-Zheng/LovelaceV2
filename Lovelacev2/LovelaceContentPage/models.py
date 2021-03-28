@@ -9,6 +9,7 @@ class LectureContent(models.Model):   # A Database model for the content on the 
 
 class TextContentModel(LectureContent):
     ContentText = models.CharField(max_length=1000,)
+    ContentTextNotParsed = models.CharField(max_length=1000,)
     ContentHeader = models.CharField(max_length=100,)
 	
 class ImageContentModel(LectureContent):

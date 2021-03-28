@@ -44,7 +44,7 @@
                         </form>			
                         <script type="text/javascript"> 
                             ContentForJS.push(["{{ ContentObject.ContentType|striptags|escapejs }}",
-                            	"{{ ContentObject.textcontentmodel.ContentText|striptags|escapejs }}", 
+                            	"{{ ContentObject.textcontentmodel.ContentTextNotParsed|striptags|escapejs }}", 
                             	"{{ ContentObject.textcontentmodel.ContentHeader|striptags|escapejs }}",
                             	"{{ ContentObject.imagecontentmodel.ContentImageTitle|striptags|escapejs }}",
 								"{{ ContentObject.imagecontentmodel.ContentImageCaption|striptags|escapejs }}",                            	
@@ -86,9 +86,6 @@
 					<iframe src="{{ContentObject.filecontentmodel.ContentFile}}" width="100%" height="300" style="border:none">
 					</iframe>
 					{% endif %}	
-					<p>
-						{{ContentObject.filecontentmodel.ContentFile}}
-				    </p>
 					</div>
 			    </div>
             {% endfor %}
@@ -97,7 +94,7 @@
 		        </button>	
 		    </div>			
 	        <section class="formforcontent" id="formforcontent" style="display: none;" title="0" > <!-- the pop-up that opens when you press the plus sign-->
-	              <h1> Add content to your selected position.</h1>
+	              <h1 class="formforcontentheader"> Add content to your selected position.</h1>
 				  <div>
                   <button class="texteditbutton" onclick="FormForContentToggle(textform)" > <!-- The selection buttons T/I, for image or text, new selection button for embedded content should be added -->
 		          </button>	
@@ -113,7 +110,7 @@
                       {{ textform.header_input }}
 					  </div>
 				      <div class="textinput">
-					  <label for="text_input" class="textinputlabel"> Paragraph: </label>
+					  <label for="text_input" class="textinputlabel"> Text: </label>
                       {{ textform.text_input }}
 					  </div>
 				      <div class="indexinput">

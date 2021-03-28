@@ -35,7 +35,7 @@ def index(request):
         print("jiijji")
         if textform.is_valid(): #if the user sends text content, then this will be true.
             text = textform.cleaned_data["text_input"]
-            text = "".join(markupparser.MarkupParser.parse(text))
+            textparsed = "".join(markupparser.MarkupParser.parse(text))
             header = textform.cleaned_data["header_input"]
             editmode = textform.cleaned_data["EditMode"]
             enteredindex = textform.cleaned_data["index_input"] #the content  from the form must be apparently cleaned, that's why the .cleaned_data is here. enteredindex is the index of the content added.
@@ -44,11 +44,11 @@ def index(request):
                     if j.Index >= enteredindex:
                         j.Index += 1
                         j.save()
-                content = TextContentModel(Parent = TemporaryCurrentLecture, Index = enteredindex, ContentType = "Text", ContentText = text, ContentHeader = header)
+                content = TextContentModel(Parent = TemporaryCurrentLecture, Index = enteredindex, ContentType = "Text", ContentText = textparsed, ContentTextNotParsed = text, ContentHeader = header)
                 content.save() #content is saved into database
             if editmode == "True":
                 content = SortedLectureContentObjects.filter(Parent = TemporaryCurrentLecture, Index = enteredindex).delete()
-                newcontent = TextContentModel(Parent = TemporaryCurrentLecture, Index = enteredindex, ContentType = "Text", ContentText = text, ContentHeader = header)
+                newcontent = TextContentModel(Parent = TemporaryCurrentLecture, Index = enteredindex, ContentType = "Text", ContentText = textparsed, ContentTextNotParsed = text, ContentHeader = header)
                 newcontent.save() #content is saved into database
             return HttpResponseRedirect("/LovelaceContentPage/")
         elif deleteform.is_valid():  #Deletion form is valid if the user fills a deletion form, aka presses the minus sign on the website.

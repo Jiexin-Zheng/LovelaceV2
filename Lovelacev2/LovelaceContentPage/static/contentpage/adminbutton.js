@@ -68,6 +68,7 @@ function EditContent(index, ContentArray) {
 			document.getElementById("fileform").style.display = "initial";
 		}
 	    currentelement.style.display = "initial";		
+	    document.getElementsByClassName("formforcontentheader")[0].innerHTML = "Edit the selected content.";
 		document.getElementById("id_index_input").value = index
 		document.getElementById("id_image_index").value = index
 		document.getElementById("id_text_input").value = ContentToBeEdited[1]
@@ -80,9 +81,14 @@ function EditContent(index, ContentArray) {
 	}
     else {
 		currentelement.style.display = "none";	
+		document.getElementsByClassName("formforcontentheader")[0].innerHTML = "Add content to the selected position.";
         document.getElementById("textform").style.display = "none";
         document.getElementById("imageform").style.display = "none";
         document.getElementById("fileform").style.display = "none";
+        document.getElementById("id_text_input").value = ""
+		document.getElementById("id_header_input").value = ""
+		document.getElementById("id_imagetitle").value = ""
+		document.getElementById("id_imagecaption").value = ""
         document.getElementById("id_EditMode").value = "False"
 		document.getElementById("id_EditModeImage").value = "False"
 		document.getElementById("id_EditModeFile").value = "False"
