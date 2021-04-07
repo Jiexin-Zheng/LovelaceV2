@@ -16,6 +16,17 @@ class ImageFileForm(forms.Form): # A form to enter an image to the website
     image_index = forms.IntegerField(initial=100)
     EditModeImage = forms.CharField(max_length=5, initial="False")
 
+
+class ExampleExerciseForm(forms.Form):
+    exercisetext = forms.CharField(max_length=1000, required=True, widget=forms.Textarea(attrs={"rows":30, "cols":40, "style":"resize:none;"}))
+    exercisetype = forms.ChoiceField(choices=[
+        ("TextfieldExercise", "TextfieldExercise"),
+        ("FileUploadExercise", "FileUploadExercise"),
+        ])
+    EditModeExercise = forms.CharField(max_length=5, initial="False")
+    exercise_index = forms.IntegerField(initial=100)
+
+
 class EmbeddedFileForm(forms.Form):
     def __init__(self,*args,**kwargs):
         Choicelist = kwargs.pop('Choicelist')

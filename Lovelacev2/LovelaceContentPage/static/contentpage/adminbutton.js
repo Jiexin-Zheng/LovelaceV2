@@ -28,14 +28,28 @@ function EditToggle(index) {
 		document.getElementById("id_index_input").value = index
 		document.getElementById("id_image_index").value = index
 		document.getElementById("id_file_index").value = index
+		document.getElementById("id_exercise_index").value = index
 		document.getElementById("id_EditMode").value = "False"
 		document.getElementById("id_EditModeImage").value = "False"
 		document.getElementById("id_EditModeFile").value = "False"
+		document.getElementById("id_EditModeExercise").value = "False"
 	}
     else {
 		currentelement.style.display = "none";	
 		
 	}
+}
+
+var ContextArray = [];
+
+function Showandhide(ContextArray) {
+	var Value = document.getElementById("id_file").value 
+	if(ContextArray.length > 1){
+		ContextArray.shift();
+	}
+	ContextArray.push(Value)
+	document.getElementById(ContextArray[0]).style.display = "none"
+	document.getElementById(ContextArray[1]).style.display = "initial"
 }
 
 
@@ -97,7 +111,7 @@ function EditContent(index, ContentArray) {
 
 function FormForContentToggle(id){
     console.log(id)
-    var listoftogglecontent = ["textform", "imageform", "fileform"];
+    var listoftogglecontent = ["textform", "imageform", "fileform", "exampleexerciseform"];
     var length = listoftogglecontent.length;
 	for (var i = 0; i < length; i++) {
 	    if(listoftogglecontent[i] == id.id){

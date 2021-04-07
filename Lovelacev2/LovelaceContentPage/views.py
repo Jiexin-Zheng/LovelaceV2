@@ -1,19 +1,28 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import Template, loader, engines
-from .forms import TextForm, DeleteForm, ImageFileForm, EmbeddedFileForm
-from .models import LectureContent, ImageContentModel, TextContentModel, FileContentModel
+from .forms import TextForm, DeleteForm, ImageFileForm, EmbeddedFileForm, ExampleExerciseForm
+from .models import LectureContent, ImageContentModel, TextContentModel, FileContentModel, EmbeddedExerciseModel
 import LovelaceContentPage.markupparser as markupparser
 import LovelaceContentPage.blockparser as blockparser
 from django.http import JsonResponse
+from . import urls
 import os
+import re
+import random as random
 
 def index(request):
-    TemporaryCurrentLecture = "Lecture14"
+    urls.urlreset(urls.urlpatterns)
+    TemporaryCurrentLecture = "Lecture15"
     List = []       #This list will contain all of the content to be rendered on the selected lecture
     List.clear() 
     ListOfTemplates = [x for x in os.listdir("LovelaceContentPage/templates") if x.endswith(".html") and x != "contentpage.html"]
+    ListOfPaths = []
+    for i in ListOfTemplates:
+        ListOfPaths.append(i.replace(" ", "%20"))
+    print(ListOfPaths)
     Choicelist = []
+    ListOfUrls = []
     for choice in ListOfTemplates:
         Choicelist.append((choice, choice))
     indexnumber = 0   # index that will hold the max number of separate pieces of content on the website
@@ -25,14 +34,20 @@ def index(request):
             i.Index = indexnumber
             i.save()
         List.append(i)
+        if i.ContentType == "EmbeddedExercise":
+            ListOfUrls.append((i.Index, i.embeddedexercisemodel.ContentExerciseText, i.embeddedexercisemodel.ContentExerciseType))
         indexnumber += 1
+    urls.createurlpatterns(ListOfPaths)
+    urls.createexerciseurlpatterns(ListOfUrls)
+    print("\n", urls.urlpatterns, "kona \n")
+    print("\n", urls.createdurls, "kona2 \n")
     template = loader.get_template("contentpage.html")
     if (request.method) == "POST":  #if a form is submitted it runs this part. Aka if image, or text is added or if deletion form is submitted to delete content.
         textform = TextForm(request.POST)  #gets the textform
         deleteform = DeleteForm(request.POST)
         imagefileform = ImageFileForm(request.POST, request.FILES)
         fileform = EmbeddedFileForm(request.POST, Choicelist = Choicelist)
-        print("jiijji")
+        exampleexerciseform = ExampleExerciseForm(request.POST)
         if textform.is_valid(): #if the user sends text content, then this will be true.
             text = textform.cleaned_data["text_input"]
             textparsed = "".join(markupparser.MarkupParser.parse(text))
@@ -54,6 +69,8 @@ def index(request):
         elif deleteform.is_valid():  #Deletion form is valid if the user fills a deletion form, aka presses the minus sign on the website.
             deletedindex = deleteform.cleaned_data["IndexToBeDeleted"]
             SortedLectureContentObjects.filter(Index=deletedindex).delete()
+            urls.urlreset(urls.urlpatterns)
+            urls.createdurls.clear()
             for j in SortedLectureContentObjects:
                 if j.Index > deletedindex:
                     j.Index -= 1
@@ -91,7 +108,27 @@ def index(request):
                         j.save()
                 content = FileContentModel(Parent = TemporaryCurrentLecture, Index = enteredindex, ContentType = "File", ContentFileTitle = filetitle, ContentFile = file)
                 content.save()
-            if editmodefile == "True":
+            elif editmodefile == "True":
+                temporaryobj = SortedLectureContentObjects.get(Parent = TemporaryCurrentLecture, Index = enteredindex)
+                tempfile = temporaryobj.imagecontentmodel.ContentFile
+                SortedLectureContentObjects.filter(Parent = TemporaryCurrentLecture, Index = enteredindex).delete()
+                newcontent = FileContentModel(Parent = TemporaryCurrentLecture, Index = enteredindex, ContentType = "File", ContentFileTitle = filetitle, ContentFile = tempfile)
+                newcontent.save() #content is saved into database
+            return HttpResponseRedirect("/LovelaceContentPage/")
+        elif exampleexerciseform.is_valid():
+            cleanexercisetext = exampleexerciseform.cleaned_data["exercisetext"]
+            cleanexercisetextparsed = "".join(markupparser.MarkupParser.parse(cleanexercisetext))
+            cleanexercisetype = exampleexerciseform.cleaned_data["exercisetype"]
+            editmodeexercise = exampleexerciseform.cleaned_data["EditModeExercise"]
+            enteredindex = exampleexerciseform.cleaned_data["exercise_index"]
+            if editmodeexercise == "False":
+                for j in SortedLectureContentObjects:
+                    if j.Index >= enteredindex:
+                        j.Index += 1
+                        j.save()
+                content = EmbeddedExerciseModel(Parent = TemporaryCurrentLecture, Index = enteredindex, ContentType = "EmbeddedExercise", ContentExerciseText = cleanexercisetextparsed, ContentExerciseTextNotParsed = cleanexercisetext, ContentExerciseType = cleanexercisetype)
+                content.save()            
+            elif editmodeexercise == "True":
                 temporaryobj = SortedLectureContentObjects.get(Parent = TemporaryCurrentLecture, Index = enteredindex)
                 tempfile = temporaryobj.imagecontentmodel.ContentFile
                 SortedLectureContentObjects.filter(Parent = TemporaryCurrentLecture, Index = enteredindex).delete()
@@ -103,13 +140,15 @@ def index(request):
         deleteform = DeleteForm()
         imagefileform = ImageFileForm()
         fileform = EmbeddedFileForm(Choicelist = Choicelist)
+        exampleexerciseform = ExampleExerciseForm()
     context = {
         "List": List,
         "textform": textform,
         "indexnumber": indexnumber,
 		"deleteform": deleteform,
         "imagefileform": imagefileform,
-        "fileform": fileform
+        "fileform": fileform,
+        "exampleexerciseform": exampleexerciseform,
     }
     return HttpResponse(template.render(context, request))
 
@@ -117,8 +156,9 @@ def index(request):
 def example1view(request):
     template = loader.get_template("example1.html")
     test = "Test"
+    randoms = random.randint(0, 155)
     context = {
-        "test": test,
+        "test": randoms,
     }
     return HttpResponse(template.render(context, request))
 
@@ -127,5 +167,33 @@ def example2view(request):
     test = "Test2"
     context = {
         "test": test,
+    }
+    return HttpResponse(template.render(context, request))
+
+def Exercise(request, Context):
+    template = loader.get_template("exercise.html")
+    print(Context)
+    context ={
+            "questionname": Context["indexofquestion"],
+            "question" : Context["ExerciseQuestion"],
+            "exercise" : Context["ExerciseType"]
+    }
+    return HttpResponse(template.render(context, request))
+
+
+
+def TextFieldExercise(request):
+    template = loader.get_template("TextFieldExercise.html")
+    randoms = random.randint(0, 155)
+    context = {
+    }
+    return HttpResponse(template.render(context, request))
+
+def TextFieldExercise(request):
+    template = loader.get_template("example1.html")
+    test = "Test"
+    randoms = random.randint(0, 155)
+    context = {
+        "test": randoms,
     }
     return HttpResponse(template.render(context, request))

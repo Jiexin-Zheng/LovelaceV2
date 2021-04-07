@@ -23,3 +23,8 @@ class ImageContentModel(LectureContent):
 class FileContentModel(LectureContent):
     ContentFileTitle = models.CharField(max_length=100,)
     ContentFile = models.CharField(max_length=100,)
+
+class EmbeddedExerciseModel(LectureContent):
+    ContentExerciseText = models.CharField(max_length=1000,)
+    ContentExerciseTextNotParsed = models.CharField(max_length=1000,)
+    ContentExerciseType = models.CharField(max_length=100,)

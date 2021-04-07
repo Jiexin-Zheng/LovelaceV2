@@ -32,6 +32,10 @@ function EditToggle(index) {
 	}
 }
 
+function Showandhide() {	
+    
+}
+
 function DeleteContent(index) {	
     document.getElementById("id_IndexToBeDeleted").value = index
     console.log(index)

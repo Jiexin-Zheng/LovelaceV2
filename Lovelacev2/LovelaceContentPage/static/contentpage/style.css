@@ -721,14 +721,14 @@ section.content {
     top: 4rem;
     background: #eee;
     box-shadow: 0 0 2em rgba(0, 0, 0, 0.4);
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: 0;
+    margin-right: 0;
     margin-top: 0;
     font-family: "LatoWeb", "DejaVu Sans", "Verdana", "Ubuntu", "Arial", sans-serif;
     font-size: 1.3em;
     color: #333;
     line-height: 1.5;
-    padding: 1em 20px 3em 20px;
+    padding: 1em 0px 3em 0px;
     min-height: calc(100% - 4rem); /* Header 6em, breadcrumbs 2em, footer 3em*/
     word-wrap: break-word;
 }
@@ -745,7 +745,7 @@ div.pieceofcontent {
 	min-height: 25px;
     height: auto;
 	overflow: auto;
-	padding: 10px;
+	padding: 0px;
 	display: flex;
 	align-items: center;
 }
@@ -754,15 +754,35 @@ div.pieceofcontent-admin {
     display: none;
 	position: relative;
     width: 10%;
+    padding: 0px 0px 0px 5px;
 	vertical-align: middle;
 	float: left;
 }
 
 div.pieceofcontent-everyone {
-    width: 90%;
+    width: 100%;
+    margin: 0px 40px 0px 120px;
 	float: right;
 }
 
+div.pieceofcontent-everyone-embedded {
+            display: flex;
+            position: relative;
+            border-color: #d0d0d0;
+            border-style: solid;
+            border: 0;
+            width: 1160px;
+            background: #caeaca;
+            padding: 1em 40px 2em 120px;
+            /*padding-left: 120px;*/
+            float: right;
+}
+
+.EmbeddedExercise {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
 div.slotforcontent {
     display: none;
     width: 100%;
@@ -799,6 +819,32 @@ div.slotforcontent {
   float: center-left;
   border-radius: 5px;
 }
+
+div.question {
+            margin-bottom: 5px;
+        }
+
+div {
+    display: block;
+}
+
+
+div.embedded-page {
+            font-family: "LatoWeb", "DejaVu Sans", "Verdana", "Ubuntu", "Arial", sans-serif;
+            font-size: 1.3em;
+            color: #333;
+            line-height: 1.5;
+            word-wrap: break-word;
+            position: relative;
+            border-color: #d0d0d0;
+            border-style: solid;
+            border-width: 0px 0;
+            width: 100%;
+            background: #caeaca;
+            /*padding-left: 120px;*/
+        }
+
+
 
 .deletebutton {
   background: url("smallminussign.png");
@@ -880,6 +926,25 @@ div.learningmaterial {
 	overflow:scroll;
 }
 
+div.question form textarea {
+                width: 100%;
+                border: 2px solid #ddd;
+                padding: 2px;
+                resize: vertical;
+                background: #f5f5f5;
+                font-family: "Inconsolata", "Lucida Console", "DejaVu Sans Mono", monospace;
+                font-size: 1.2rem;
+            }
+
+div.question form {
+            position: relative;
+            margin-top: 5px;
+            padding: 9px;
+            border: 2px solid #d0d0d0;
+            background: #daeeda;
+        }
+
+
 .formforediting {
     display: initial;
     height: 80%;
@@ -924,7 +989,155 @@ div.learningmaterial {
     line-height: 150%;
     font-size: .85em;
 }
+div.question form {
+            position: relative;
+            margin-top: 5px;
+            padding: 9px;
+            border: 2px solid #d0d0d0;
+            background: #daeeda;
+        }
 
+div.embedded-page h1, div.embedded-page h2, div.embedded-page h3, div.embedded-page h4, div.embedded-page h5, div.embedded-page h6 {
+        font-family: "LatoWebSemibold", "Trebuchet MS", "Helvetica", sans-serif;
+        /*font-weight: normal;*/
+        /*letter-spacing: 0.05em;*/
+        word-spacing: 0.1em;
+    }
+
+    div.embedded-page span.anchor-offset {
+        width: 0;
+        height: 0;
+        padding-top: 4rem;
+        margin-top: -4rem;
+        visibility: hidden;
+    }
+
+    div.embedded-page h1:first-child, div.embedded-page h2:first-child, div.embedded-page h3:first-child, div.embedded-page h4:first-child, div.embedded-page h5:first-child, div.embedded-page h6:first-child, .task-meta-container + h1, .task-meta-container + h2, .task-meta-container + h3, .task-meta-container + h4, .task-meta-container + h5, .task-meta-container + h6 {
+        margin-top: 0 !important;
+    }
+
+    div.embedded-page h1 {
+        margin-top: 1em;
+        font-size: 1.8em;
+        font-variant: small-caps;
+        word-spacing: 0.2em;
+        padding-bottom: 2px;
+        border-bottom: 1px solid #888;
+        margin-bottom: 1em;
+        text-shadow: rgba(63, 63, 63, 0.5) 1px 1px 1px;
+    }
+    div.embedded-page h2 {
+        font-size: 1.5em;
+        margin-top: 1em;
+        margin-bottom: 0.5em;
+        text-shadow: rgba(63, 63, 63, 0.5) 1px 1px 1px;
+        font-weight: bold;
+    }
+    div.embedded-page h3 {
+        font-size: 1.25em;
+        margin-top: 1em;
+        margin-bottom: 0.0em;
+        text-shadow: rgba(63, 63, 63, 0.5) 1px 1px 1px;
+    }
+    div.embedded-page  h4 {
+        font-size: 1.2em;
+        letter-spacing: 0.03em;
+        word-spacing: 0.07em;
+        margin-bottom: 0.0em;
+        font-weight: bold;
+
+    }
+    div.embedded-page h5 {
+        font-size: 1.1em;
+        margin-bottom: 0.0em;
+    }
+    div.embedded-page h6 {
+        font-size: 1.0em;
+        margin-bottom: 0.0em;
+        font-weight: bold;
+    }
+
+    div.embedded-page figure {
+        margin-top: 0.5em;
+        margin-left: 0;
+        margin-bottom: 1em;
+        display: table;
+        width: 1px;
+    }
+
+    div.embedded-page div.paragraph {
+        margin-bottom: 1.5em;
+    }
+
+    div.embedded-page span.anchor-offset {
+    width: 0;
+    height: 0;
+    padding-top: 4rem;
+    margin-top: -4rem;
+    visibility: hidden;
+    }
+
+    div.embedded-page a.permalink {
+    position: relative;
+    top: -1px;
+    font-size: 0.8em;
+    text-shadow: none;
+    text-decoration: none;
+    padding: 2px 4px;
+    margin-left: 4px;
+    color: transparent;
+    }
+
+    div.embedded-page pre.normal {
+        font-family: "Inconsolata", "Lucida Console", "DejaVu Sans Mono", monospace;
+        background: #e2e2e2;
+        font-size: 1.2rem;
+        padding: 2px 4px;
+        border: 1px solid #cacaca;
+        border-radius: 3px;
+        box-shadow: inset 0 0 3px #cacaca;
+        line-height: 1.15;
+        white-space: pre;
+        overflow-x: auto;
+        width: auto;
+        margin-bottom: 1em;
+    }
+
+    div.embedded-page pre.normal {
+        font-family: "Inconsolata", "Lucida Console", "DejaVu Sans Mono", monospace;
+        background: #e2e2e2;
+        font-size: 1.2rem;
+        padding: 2px 4px;
+        border: 1px solid #cacaca;
+        border-radius: 3px;
+        box-shadow: inset 0 0 3px #cacaca;
+        line-height: 1.15;
+        white-space: pre;
+        overflow-x: auto;
+        width: auto;
+        margin-bottom: 1em;
+    }
+
+    div.embedded-page div.paragraph > code, div.embedded-page td > code, div.embedded-page li > code, div.embedded-page form > code, div.embedded-page mark > code {
+        font-family: "Inconsolata", "Lucida Console", "DejaVu Sans Mono", monospace;
+        background: #e2e2e2;
+        font-size: 1em;
+        padding: 1px 3px;
+        border: 1px solid #cacaca;
+        border-radius: 3px;
+        box-shadow: inset 0 0 5px #cacaca;
+        white-space: nowrap;
+    }
+    div.embedded-page div.question form input[type=file], div.embedded-page div.question form input[type=submit] {
+        font-family: "LatoWeb";
+        font-size: 0.9em;
+        min-width: 170px;
+        line-height: 1.35;
+        margin: 6px 0 0 0;
+    }
+
+
+            }
     div.revision-info {
         position: relative;
         border: 2px dashed #f66;
@@ -1275,7 +1488,6 @@ div.learningmaterial {
             /*padding-left: 120px;*/
             margin-bottom: 1em;
         }
-
         section.content div.question {
             /*margin-bottom: 2em;*/
         }

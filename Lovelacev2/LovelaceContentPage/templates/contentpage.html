@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="{% static 'contentpage/style.css' %}">
 	<script src="{% static 'contentpage/adminbutton.js' %}"></script>   
     <title> A prototype lecture page with content management tools </title>
+    <script>
+    	var ContextArray = [];
+    </script>
   </head>
   <body>
     <div id="container">
@@ -55,38 +58,57 @@
 						<button class="editcontentbutton" onclick="EditContent({{ forloop.counter0}}, ContentForJS)"> 
 	                    </button>
 					</div>
-					<div class="pieceofcontent-everyone"> <!-- This part renders the piece of content from the list that is currently contained in ContentObject of the for loop. The way the content is rendered is handled with if statements, for example if its image content then in the  current implementation the ContentText field of ContentObject will be "NoText" which means the if statement will be false, thus for image content no text is rendered-->
-					{%if ContentObject.textcontentmodel.ContentHeader %}
-					<h1>
-					{{ContentObject.textcontentmodel.ContentHeader}}
-					</h1>
+						{% if not ContentObject.embeddedexercisemodel.ContentExerciseType %}
+						<div class="pieceofcontent-everyone"> <!-- This part renders the piece of content from the list that is currently contained in ContentObject of the for loop. The way the content is rendered is handled with if statements, for example if its image content then in the  current implementation the ContentText field of ContentObject will be "NoText" which means the if statement will be false, thus for image content no text is rendered-->
+						{%if ContentObject.textcontentmodel.ContentHeader %}
+							<h1>
+							{{ContentObject.textcontentmodel.ContentHeader}}
+							</h1>
+						{% endif %}
+						{%if ContentObject.textcontentmodel.ContentText %}
+							<div>
+							{% autoescape off %}{{ContentObject.textcontentmodel.ContentText}}{% endautoescape %} 
+							</div>
+						{% endif %}
+						{%if ContentObject.imagecontentmodel.ContentImageTitle %}
+							<h1>
+							{{ContentObject.imagecontentmodel.ContentImageTitle}}
+							</h1>
+						{% endif %}
+						{%if ContentObject.imagecontentmodel.ContentImageFile %}
+							<figure>
+							<img src="{{ContentObject.imagecontentmodel.ContentImageFile.url}}" alt="ImageMissing">
+							<figcaption>{{ContentObject.imagecontentmodel.ContentImageCaption}}</figcaption>
+							</figure>
+						{% endif %}				
+						{%if ContentObject.filecontentmodel.ContentFileTitle %}
+							<h1>
+							{{ContentObject.filecontentmodel.ContentFileTitle}}
+							</h1>
+						{% endif %}	
+						{%if ContentObject.filecontentmodel.ContentFile %}
+							<iframe src="{{ContentObject.filecontentmodel.ContentFile}}" width="100%" height="300" style="border:none;display: flex;align-items: center;">
+							</iframe>
+						{% endif %}	
+						</div>
+						{% endif %}
+						{%if ContentObject.embeddedexercisemodel.ContentExerciseType %}
+						<div class="pieceofcontent-everyone-embedded">
+							<iframe src="{{ContentObject.Index}}" width="100%" height="100%" id ="embeddediframe{{forloop.counter0}}" style="border:none;display: flex;align-items: center;" onload="function(){
+        					iframe.style.height = iframe.contentWindow.document.body.scrollHeight + 'px';
+    						}">
+							</iframe>
+						</div>
+						<script>
+    						var iframe{{forloop.counter0}} = document.getElementById("embeddediframe{{forloop.counter0}}");
+    						console.log(iframe{{forloop.counter0}})
+    						iframe{{forloop.counter0}}.onload = function(){
+        					iframe{{forloop.counter0}}.style.height = iframe{{forloop.counter0}}.contentWindow.document.body.scrollHeight + 'px';
+    						}
+    					</script>
+						{% endif %}	
+					{%if ContentObject.embeddedexercisemodel.ContentExerciseType %}
 					{% endif %}
-					{%if ContentObject.textcontentmodel.ContentText %}
-					<div>
-					{% autoescape off %}{{ContentObject.textcontentmodel.ContentText}}{% endautoescape %} 
-					</div>
-					{% endif %}
-					{%if ContentObject.imagecontentmodel.ContentImageTitle %}
-					<h1>
-					{{ContentObject.imagecontentmodel.ContentImageTitle}}
-					</h1>
-					{% endif %}
-					{%if ContentObject.imagecontentmodel.ContentImageFile %}
-					<figure>
-					<img src="{{ContentObject.imagecontentmodel.ContentImageFile.url}}" alt="ImageMissing">
-					<figcaption>{{ContentObject.imagecontentmodel.ContentImageCaption}}</figcaption>
-					</figure>
-					{% endif %}				
-					{%if ContentObject.filecontentmodel.ContentFileTitle %}
-					<h1>
-					{{ContentObject.filecontentmodel.ContentFileTitle}}
-					</h1>
-					{% endif %}	
-					{%if ContentObject.filecontentmodel.ContentFile %}
-					<iframe src="{{ContentObject.filecontentmodel.ContentFile}}" width="100%" height="300" style="border:none">
-					</iframe>
-					{% endif %}	
-					</div>
 			    </div>
             {% endfor %}
 		    <div class="slotforcontent" id="adminOnly" style="display: none;"> <!-- The final slot for content after the for loop -->
@@ -101,6 +123,8 @@
 				  <button class="imageeditbutton" onclick="FormForContentToggle(imageform)" >
 		          </button>	
 		          <button class="fileeditbutton" onclick="FormForContentToggle(fileform)" >
+		          </button>	
+		          <button class="fileeditbutton" onclick="FormForContentToggle(exampleexerciseform)" >
 		          </button>	
 			      </div>
 				  <form action="" method="post" id="textform" style="display: none;"> <!-- textform, visible only if image mode is not selected -->
@@ -151,16 +175,35 @@
 					  <label for="filetitletitle" class="filetitlelabel"> File title: (optional) </label>
                       {{ fileform.filetitle }}
 					  </div>
-				      <div class="fileinput">
+				      <div class="fileinput" id="fileinput">
 					  <label for="file" class="filelabel"> File: </label>
                       {{ fileform.file }}
 					  </div>
 				      <div class="indexinput">
-					  <label for="file_index" class="indexinputlabel"> Index of content: </label>
+					  <label for="file_index" class="indexinputlabel" > Index of content: </label>
                       {{ fileform.file_index }}
 					  </div>
 				      <div class="editmodefileinput" style="display: none;">
                       {{ fileform.EditModeFile }}
+					  </div>		
+					  <input type="submit" value="Submit">
+                  </form>                  
+                  <form action="" method="POST" enctype="multipart/form-data" id="exampleexerciseform" style="display: none;"> 
+				      {% csrf_token %}
+				      <div class="exercisetext">
+					  <label for="exercisetext" class="exercisetext"> Exercise question: </label>
+                      {{ exampleexerciseform.exercisetext }}
+					  </div>
+				      <div class="exercisetype" id="exercisetype">
+					  <label for="file" class="filelabel"> Exercise type: </label>
+                      {{ exampleexerciseform.exercisetype }}
+					  </div>
+				      <div class="indexinput">
+					  <label for="exercise_index" class="indexinputlabel"> Index of content: </label>
+                      {{ exampleexerciseform.exercise_index }}
+					  </div>
+					  <div class="editmodeexercise">
+                      {{ exampleexerciseform.EditModeExercise }}
 					  </div>		
 					  <input type="submit" value="Submit">
                   </form>                  
