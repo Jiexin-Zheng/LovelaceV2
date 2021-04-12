@@ -53,92 +53,15 @@ def index(request):
         fileform = EmbeddedFileForm(request.POST, Choicelist = Choicelist)
         exampleexerciseform = ExampleExerciseForm(request.POST)
         if textform.is_valid(): #if the user sends text content, then this will be true.
-            text = textform.cleaned_data["text_input"]
-            textparsed = "".join(markupparser.MarkupParser.parse(text))
-            header = textform.cleaned_data["header_input"]
-            editmode = textform.cleaned_data["EditMode"]
-            enteredindex = textform.cleaned_data["index_input"] #the content  from the form must be apparently cleaned, that's why the .cleaned_data is here. enteredindex is the index of the content added.
-            if editmode == "False":
-                for j in SortedLectureContentObjects:  #again, when new content is added, the indexes that are as high or higher must be incremented so that the new content can be added in the middle.
-                    if j.Index >= enteredindex:
-                        j.Index += 1
-                        j.save()
-                content = TextContentModel(Parent = TemporaryCurrentLecture, Index = enteredindex, ContentType = "Text", ContentText = textparsed, ContentTextNotParsed = text, ContentHeader = header)
-                content.save() #content is saved into database
-            if editmode == "True":
-                content = SortedLectureContentObjects.filter(Parent = TemporaryCurrentLecture, Index = enteredindex).delete()
-                newcontent = TextContentModel(Parent = TemporaryCurrentLecture, Index = enteredindex, ContentType = "Text", ContentText = textparsed, ContentTextNotParsed = text, ContentHeader = header)
-                newcontent.save() #content is saved into database
-            return HttpResponseRedirect("/LovelaceContentPage/")
+            return(handletextform(textform, SortedLectureContentObjects, TemporaryCurrentLecture))
         elif deleteform.is_valid():  #Deletion form is valid if the user fills a deletion form, aka presses the minus sign on the website.
-            deletedindex = deleteform.cleaned_data["IndexToBeDeleted"]
-            SortedLectureContentObjects.filter(Index=deletedindex).delete()
-            urls.urlreset(urls.urlpatterns)
-            urls.createdurls.clear()
-            for j in SortedLectureContentObjects:
-                if j.Index > deletedindex:
-                    j.Index -= 1
-                    j.save()
-            return HttpResponseRedirect("/LovelaceContentPage/")
+            return(handledeleteform(deleteform, SortedLectureContentObjects, TemporaryCurrentLecture))
         elif imagefileform.is_valid():  #basically the same a the text form, just different variables. 
-            imagefiletitle = imagefileform.cleaned_data["imagetitle"]		
-            imagefile = imagefileform.cleaned_data["imagefile"]	
-            imagecaption = imagefileform.cleaned_data["imagecaption"]
-            enteredindex = imagefileform.cleaned_data["image_index"]
-            editmodeimage = imagefileform.cleaned_data["EditModeImage"]
-            if editmodeimage == "False":
-                for j in SortedLectureContentObjects:
-                    if j.Index >= enteredindex:
-                        j.Index += 1
-                        j.save()
-                content = ImageContentModel(Parent = TemporaryCurrentLecture, Index = enteredindex, ContentType = "Image", ContentImageTitle = imagefiletitle, ContentImageFile = imagefile, ContentImageCaption = imagecaption)
-                content.save()
-            if editmodeimage == "True":
-                temporaryobj = SortedLectureContentObjects.get(Parent = TemporaryCurrentLecture, Index = enteredindex)
-                tempimagefile = temporaryobj.imagecontentmodel.ContentImageFile
-                SortedLectureContentObjects.filter(Parent = TemporaryCurrentLecture, Index = enteredindex).delete()
-                newcontent = ImageContentModel(Parent = TemporaryCurrentLecture, Index = enteredindex, ContentType = "Image", ContentImageTitle = imagefiletitle, ContentImageFile = tempimagefile, ContentImageCaption = imagecaption)
-                newcontent.save() #content is saved into database
-            return HttpResponseRedirect("/LovelaceContentPage/")  #redirect back to the same page(reload page)
+            return(handleimageform(imagefileform, SortedLectureContentObjects, TemporaryCurrentLecture))
         elif fileform.is_valid():
-            filetitle = fileform.cleaned_data["filetitle"]       
-            file = fileform.cleaned_data["file"] 
-            enteredindex = fileform.cleaned_data["file_index"]
-            editmodefile = fileform.cleaned_data["EditModeFile"]
-            if editmodefile == "False":
-                for j in SortedLectureContentObjects:
-                    if j.Index >= enteredindex:
-                        j.Index += 1
-                        j.save()
-                content = FileContentModel(Parent = TemporaryCurrentLecture, Index = enteredindex, ContentType = "File", ContentFileTitle = filetitle, ContentFile = file)
-                content.save()
-            elif editmodefile == "True":
-                temporaryobj = SortedLectureContentObjects.get(Parent = TemporaryCurrentLecture, Index = enteredindex)
-                tempfile = temporaryobj.imagecontentmodel.ContentFile
-                SortedLectureContentObjects.filter(Parent = TemporaryCurrentLecture, Index = enteredindex).delete()
-                newcontent = FileContentModel(Parent = TemporaryCurrentLecture, Index = enteredindex, ContentType = "File", ContentFileTitle = filetitle, ContentFile = tempfile)
-                newcontent.save() #content is saved into database
-            return HttpResponseRedirect("/LovelaceContentPage/")
+            return(handlefileform(fileform, SortedLectureContentObjects, TemporaryCurrentLecture))
         elif exampleexerciseform.is_valid():
-            cleanexercisetext = exampleexerciseform.cleaned_data["exercisetext"]
-            cleanexercisetextparsed = "".join(markupparser.MarkupParser.parse(cleanexercisetext))
-            cleanexercisetype = exampleexerciseform.cleaned_data["exercisetype"]
-            editmodeexercise = exampleexerciseform.cleaned_data["EditModeExercise"]
-            enteredindex = exampleexerciseform.cleaned_data["exercise_index"]
-            if editmodeexercise == "False":
-                for j in SortedLectureContentObjects:
-                    if j.Index >= enteredindex:
-                        j.Index += 1
-                        j.save()
-                content = EmbeddedExerciseModel(Parent = TemporaryCurrentLecture, Index = enteredindex, ContentType = "EmbeddedExercise", ContentExerciseText = cleanexercisetextparsed, ContentExerciseTextNotParsed = cleanexercisetext, ContentExerciseType = cleanexercisetype)
-                content.save()            
-            elif editmodeexercise == "True":
-                temporaryobj = SortedLectureContentObjects.get(Parent = TemporaryCurrentLecture, Index = enteredindex)
-                tempfile = temporaryobj.imagecontentmodel.ContentFile
-                SortedLectureContentObjects.filter(Parent = TemporaryCurrentLecture, Index = enteredindex).delete()
-                newcontent = FileContentModel(Parent = TemporaryCurrentLecture, Index = enteredindex, ContentType = "File", ContentFileTitle = filetitle, ContentFile = tempfile)
-                newcontent.save() #content is saved into database
-            return HttpResponseRedirect("/LovelaceContentPage/")
+            return(handleexerciseform(exampleexerciseform, SortedLectureContentObjects, TemporaryCurrentLecture))
     else: #if no forms are sent, then they are just kept empty.
         textform = TextForm()
         deleteform = DeleteForm()
@@ -155,6 +78,98 @@ def index(request):
         "exampleexerciseform": exampleexerciseform,
     }
     return HttpResponse(template.render(context, request))
+
+def handletextform(textform, SortedLectureContentObjects, TemporaryCurrentLecture):
+    text = textform.cleaned_data["text_input"]
+    textparsed = "".join(markupparser.MarkupParser.parse(text))
+    header = textform.cleaned_data["header_input"]
+    editmode = textform.cleaned_data["EditMode"]
+    enteredindex = textform.cleaned_data["index_input"] #the content  from the form must be apparently cleaned, that's why the .cleaned_data is here. enteredindex is the index of the content added.
+    if editmode == "False":
+        for j in SortedLectureContentObjects:  #again, when new content is added, the indexes that are as high or higher must be incremented so that the new content can be added in the middle.
+            if j.Index >= enteredindex:
+                j.Index += 1
+                j.save()
+        content = TextContentModel(Parent = TemporaryCurrentLecture, Index = enteredindex, ContentType = "Text", ContentText = textparsed, ContentTextNotParsed = text, ContentHeader = header)
+        content.save() #content is saved into database
+    if editmode == "True":
+        content = SortedLectureContentObjects.filter(Parent = TemporaryCurrentLecture, Index = enteredindex).delete()
+        newcontent = TextContentModel(Parent = TemporaryCurrentLecture, Index = enteredindex, ContentType = "Text", ContentText = textparsed, ContentTextNotParsed = text, ContentHeader = header)
+        newcontent.save() #content is saved into database
+    return HttpResponseRedirect("/LovelaceContentPage/")    
+
+def handleimageform(imagefileform, SortedLectureContentObjects, TemporaryCurrentLecture):
+    imagefiletitle = imagefileform.cleaned_data["imagetitle"]       
+    imagefile = imagefileform.cleaned_data["imagefile"] 
+    imagecaption = imagefileform.cleaned_data["imagecaption"]
+    enteredindex = imagefileform.cleaned_data["image_index"]
+    editmodeimage = imagefileform.cleaned_data["EditModeImage"]
+    if editmodeimage == "False":
+        for j in SortedLectureContentObjects:
+            if j.Index >= enteredindex:
+                j.Index += 1
+                j.save()
+        content = ImageContentModel(Parent = TemporaryCurrentLecture, Index = enteredindex, ContentType = "Image", ContentImageTitle = imagefiletitle, ContentImageFile = imagefile, ContentImageCaption = imagecaption)
+        content.save()
+    if editmodeimage == "True":
+        temporaryobj = SortedLectureContentObjects.get(Parent = TemporaryCurrentLecture, Index = enteredindex)
+        tempimagefile = temporaryobj.imagecontentmodel.ContentImageFile
+        SortedLectureContentObjects.filter(Parent = TemporaryCurrentLecture, Index = enteredindex).delete()
+        newcontent = ImageContentModel(Parent = TemporaryCurrentLecture, Index = enteredindex, ContentType = "Image", ContentImageTitle = imagefiletitle, ContentImageFile = tempimagefile, ContentImageCaption = imagecaption)
+        newcontent.save() #content is saved into database
+    return HttpResponseRedirect("/LovelaceContentPage/")  #redirect back to the same page(reload page)
+
+def handledeleteform(deleteform, SortedLectureContentObjects, TemporaryCurrentLecture):
+    deletedindex = deleteform.cleaned_data["IndexToBeDeleted"]
+    SortedLectureContentObjects.filter(Index=deletedindex).delete()
+    urls.urlreset(urls.urlpatterns)
+    urls.createdurls.clear()
+    for j in SortedLectureContentObjects:
+        if j.Index > deletedindex:
+            j.Index -= 1
+            j.save()
+    return HttpResponseRedirect("/LovelaceContentPage/")
+
+def handlefileform(fileform, SortedLectureContentObjects, TemporaryCurrentLecture):
+    filetitle = fileform.cleaned_data["filetitle"]       
+    file = fileform.cleaned_data["file"] 
+    enteredindex = fileform.cleaned_data["file_index"]
+    editmodefile = fileform.cleaned_data["EditModeFile"]
+    if editmodefile == "False":
+        for j in SortedLectureContentObjects:
+            if j.Index >= enteredindex:
+                j.Index += 1
+                j.save()
+        content = FileContentModel(Parent = TemporaryCurrentLecture, Index = enteredindex, ContentType = "File", ContentFileTitle = filetitle, ContentFile = file)
+        content.save()
+    elif editmodefile == "True":
+        temporaryobj = SortedLectureContentObjects.get(Parent = TemporaryCurrentLecture, Index = enteredindex)
+        tempfile = temporaryobj.imagecontentmodel.ContentFile
+        SortedLectureContentObjects.filter(Parent = TemporaryCurrentLecture, Index = enteredindex).delete()
+        newcontent = FileContentModel(Parent = TemporaryCurrentLecture, Index = enteredindex, ContentType = "File", ContentFileTitle = filetitle, ContentFile = tempfile)
+        newcontent.save() #content is saved into database
+    return HttpResponseRedirect("/LovelaceContentPage/")
+
+def handleexerciseform(exampleexerciseform, SortedLectureContentObjects, TemporaryCurrentLecture):
+    cleanexercisetext = exampleexerciseform.cleaned_data["exercisetext"]
+    cleanexercisetextparsed = "".join(markupparser.MarkupParser.parse(cleanexercisetext))
+    cleanexercisetype = exampleexerciseform.cleaned_data["exercisetype"]
+    editmodeexercise = exampleexerciseform.cleaned_data["EditModeExercise"]
+    enteredindex = exampleexerciseform.cleaned_data["exercise_index"]
+    if editmodeexercise == "False":
+        for j in SortedLectureContentObjects:
+            if j.Index >= enteredindex:
+                j.Index += 1
+                j.save()
+        content = EmbeddedExerciseModel(Parent = TemporaryCurrentLecture, Index = enteredindex, ContentType = "EmbeddedExercise", ContentExerciseText = cleanexercisetextparsed, ContentExerciseTextNotParsed = cleanexercisetext, ContentExerciseType = cleanexercisetype)
+        content.save()            
+    elif editmodeexercise == "True":
+        temporaryobj = SortedLectureContentObjects.get(Parent = TemporaryCurrentLecture, Index = enteredindex)
+        tempfile = temporaryobj.imagecontentmodel.ContentFile
+        SortedLectureContentObjects.filter(Parent = TemporaryCurrentLecture, Index = enteredindex).delete()
+        newcontent = FileContentModel(Parent = TemporaryCurrentLecture, Index = enteredindex, ContentType = "File", ContentFileTitle = filetitle, ContentFile = tempfile)
+        newcontent.save() #content is saved into database
+    return HttpResponseRedirect("/LovelaceContentPage/")
 
 
 def example1view(request):
@@ -180,23 +195,5 @@ def Exercise(request, Context):
             "questionname": Context["indexofquestion"],
             "question" : Context["ExerciseQuestion"],
             "exercise" : Context["ExerciseType"]
-    }
-    return HttpResponse(template.render(context, request))
-
-
-
-def TextFieldExercise(request):
-    template = loader.get_template("TextFieldExercise.html")
-    randoms = random.randint(0, 155)
-    context = {
-    }
-    return HttpResponse(template.render(context, request))
-
-def TextFieldExercise(request):
-    template = loader.get_template("example1.html")
-    test = "Test"
-    randoms = random.randint(0, 155)
-    context = {
-        "test": randoms,
     }
     return HttpResponse(template.render(context, request))
