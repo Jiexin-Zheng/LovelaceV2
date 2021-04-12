@@ -10,6 +10,8 @@ from . import urls
 import os
 import re
 import random as random
+from django.core.cache import cache
+
 
 def index(request):
     urls.urlreset(urls.urlpatterns)
@@ -20,14 +22,17 @@ def index(request):
     ListOfPaths = []
     for i in ListOfTemplates:
         ListOfPaths.append(i.replace(" ", "%20"))
-    print(ListOfPaths)
     Choicelist = []
     ListOfUrls = []
     for choice in ListOfTemplates:
         Choicelist.append((choice, choice))
     indexnumber = 0   # index that will hold the max number of separate pieces of content on the website
     isBreak = False # No idea why this is here
-    LectureContentObjects = LectureContent.objects.filter(Parent = TemporaryCurrentLecture)  # LectureContentObjects filters the lecture content from database that belongs to the selected course. In this case the "lecture8" is just an example, in real implementation it would be somehow inherited from the website that you can get to the lecture from.
+    if cache.get(TemporaryCurrentLecture) == None:
+        LectureContentObjects = LectureContent.objects.filter(Parent = TemporaryCurrentLecture)  # LectureContentObjects filters the lecture content from database that belongs to the selected course. In this case the "lecture8" is just an example, in real implementation it would be somehow inherited from the website that you can get to the lecture from.
+        cache.set(TemporaryCurrentLecture, LectureContentObjects)
+    else:
+        LectureContentObjects = cache.get(TemporaryCurrentLecture)
     SortedLectureContentObjects = LectureContentObjects.order_by("Index")  #Sort the lecture specific content based on index so that it gets rendered in correct order.
     for i in SortedLectureContentObjects:    #a for loop that saves all the sorted lecture content into the list in order plus changes the indexes if there are "holes" in the order of them. for example if content with index 2 is deleted then the following indexes must be changed to make it work.
         if i.Index != indexnumber:   #this is the reordering part.
@@ -39,10 +44,9 @@ def index(request):
         indexnumber += 1
     urls.createurlpatterns(ListOfPaths)
     urls.createexerciseurlpatterns(ListOfUrls)
-    print("\n", urls.urlpatterns, "kona \n")
-    print("\n", urls.createdurls, "kona2 \n")
     template = loader.get_template("contentpage.html")
     if (request.method) == "POST":  #if a form is submitted it runs this part. Aka if image, or text is added or if deletion form is submitted to delete content.
+        cache.clear()
         textform = TextForm(request.POST)  #gets the textform
         deleteform = DeleteForm(request.POST)
         imagefileform = ImageFileForm(request.POST, request.FILES)
@@ -172,7 +176,6 @@ def example2view(request):
 
 def Exercise(request, Context):
     template = loader.get_template("exercise.html")
-    print(Context)
     context ={
             "questionname": Context["indexofquestion"],
             "question" : Context["ExerciseQuestion"],

@@ -29,6 +29,8 @@
                 var ContentForJS = [];
                 console.log(ContentForJS)
             </script>	
+            {% load cache %}
+      		{% cache 500 content %}
 	        {% for ContentObject in List %} <!-- This for loop loops through the list from views.py file, and shows the content on the page in order of index -->
 				<div class="slotforcontent" id="adminOnly" style="display: none;"> <!-- slotforcontent is the darker blank area with + sign on the left -->
                         <button class="addbutton" onclick="EditToggle({{ forloop.counter0 }})"> 
@@ -115,6 +117,7 @@
                 <button class="addbutton" onclick="EditToggle({{ indexnumber }})"> 
 		        </button>	
 		    </div>			
+		    {% endcache %}
 	        <section class="formforcontent" id="formforcontent" style="display: none;" title="0" > <!-- the pop-up that opens when you press the plus sign-->
 	              <h1 class="formforcontentheader"> Add content to your selected position.</h1>
 				  <div>
@@ -129,6 +132,8 @@
 			      </div>
 				  <form action="" method="post" id="textform" style="display: none;"> <!-- textform, visible only if image mode is not selected -->
 				      {% csrf_token %}
+				      {% load cache %}
+      				  	{% cache 500 textformcache %}
 				      <div class="headerinput">
 					  <label for="header_input" class="headerinputlabel"> Header: (optional) </label>
                       {{ textform.header_input }}
@@ -144,10 +149,13 @@
 				      <div class="editmodeinput" style="display: none;">
                       {{ textform.EditMode }}
 					  </div>		
+					  {% endcache %}
                       <input type="submit" value="Submit">
                    </form>
 				  <form action="" method="POST" enctype="multipart/form-data" id="imageform" style="display: none;"> <!-- imageform, visible only if text is not selected -->
 				      {% csrf_token %}
+				      {% load cache %}
+      				  	{% cache 500 imageformcache %}
 				      <div class="imagetitleinput">
 					  <label for="imagetitle" class="imagetitlelabel"> Image title: (optional) </label>
                       {{ imagefileform.imagetitle }}
@@ -166,11 +174,14 @@
 					  </div>
 				      <div class="editmodeimageinput" style="display: none;">
                       {{ imagefileform.EditModeImage }}
-					  </div>		
+					  </div>	
+					  {% endcache %}	
 					  <input type="submit" value="Submit">
                   </form>
 				  <form action="" method="POST" enctype="multipart/form-data" id="fileform" style="display: none;"> <!-- imageform, visible only if text is not selected -->
 				      {% csrf_token %}
+				      {% load cache %}
+      				  	{% cache 500 fileformcache %}
 				      <div class="filetitleinput">
 					  <label for="filetitletitle" class="filetitlelabel"> File title: (optional) </label>
                       {{ fileform.filetitle }}
@@ -186,10 +197,13 @@
 				      <div class="editmodefileinput" style="display: none;">
                       {{ fileform.EditModeFile }}
 					  </div>		
+					  {% endcache %}
 					  <input type="submit" value="Submit">
                   </form>                  
                   <form action="" method="POST" enctype="multipart/form-data" id="exampleexerciseform" style="display: none;"> 
 				      {% csrf_token %}
+				      {% load cache %}
+      				  	{% cache 500 exerciseformcache %}
 				      <div class="exercisetext">
 					  <label for="exercisetext" class="exercisetext"> Exercise question: </label>
                       {{ exampleexerciseform.exercisetext }}
@@ -205,6 +219,7 @@
 					  <div class="editmodeexercise">
                       {{ exampleexerciseform.EditModeExercise }}
 					  </div>		
+					  {% endcache %}
 					  <input type="submit" value="Submit">
                   </form>                  
 	        </section>

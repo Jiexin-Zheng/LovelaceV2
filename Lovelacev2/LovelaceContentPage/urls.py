@@ -15,9 +15,7 @@ def createurlpatterns(List):
 			urlpatterns.append(path(i, views.example1view, name=i))
 
 def createexerciseurlpatterns(List):
-	print("\n konnaaaa", List)
 	for i in List:
-		print(createdurls)
 		if i[0] not in createdurls:
 			createdurls.append(i[0])
 			urlpatterns.append(path(i[0], views.Exercise, {'Context': {
