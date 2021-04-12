@@ -79,6 +79,7 @@ def index(request):
     }
     return HttpResponse(template.render(context, request))
 
+
 def handletextform(textform, SortedLectureContentObjects, TemporaryCurrentLecture):
     text = textform.cleaned_data["text_input"]
     textparsed = "".join(markupparser.MarkupParser.parse(text))

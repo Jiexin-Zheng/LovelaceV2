@@ -1,0 +1,51 @@
+{% load i18n %}
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'contentpage/style.css' %}">
+<div class="embedded-page">
+<div>{% autoescape off %} {{ question }}{% endautoescape %} </div>
+<div class="question">
+  <div class="results-box hints" style="display: none">
+    <span class="results-header">Hints</span>
+    <div class="hints-list"></div>
+  </div>
+  
+  <form id="{{ questionname }}-form" class="exercise-form" method="POST" enctype="multipart/form-data">
+    
+    {% csrf_token %}
+    <p> Answer the question </p>
+    {% if exercise %}
+
+    {% if exercise == "TextfieldExercise" %}
+      <textarea name="answer" class="task_text" placeholder="{% trans 'Enter your answer here' %}" rows="3"></textarea><br>
+    {% elif exercise == "FileUploadExercise" %}
+        <div class="input-label-container"><label for="collaborators" class="file">{% trans "Collaborators:" %}</label><input name="collaborators" type="text" size="60" class="task_file" placeholder="{% trans 'Who did you co-operate with?' %}"></div>
+        <div class="input-label-container"><label for="file" class="file">{% trans "Submit your files here:" %}</label><input name="file" type="file" class="task_file" multiple="multiple"></div>
+    {% comment %}Use the accept and multiple properties for the file!{% endcomment %}
+    {% endif %}
+    {% endif %}
+    
+    <input type="submit" name="submit" value="{% trans 'Send answer' %}">
+
+    {% if evaluation == "unanswered" %}
+      <div class="answered-status"></div>
+    {% elif evaluation == "incorrect" %}
+      <div class="answered-status"><span class="incorrect">{% trans "You have previously answered this task incorrectly." %}</span></div>
+    {% elif evaluation == "correct" %}
+      <div class="answered-status"><span class="correct">{% trans "You have already answered this task correctly." %}</span></div>
+    {% endif %}
+
+  </form>
+  <div class="results-box error" style="display: none"></div>
+  <div class="results-box result" style="display: none"></div>
+  <div class="results-box file-result" style="display: none"></div>
+  <div class="results-box msgs" style="display: none">
+    <span class="results-header"> Messages </span>
+    <div class="msgs-list"></div>
+  </div>
+  <div class="results-box comments" style="display: none"></div>
+</div>
+{% block feedback %}
+  Feedbacks
+{% endblock %}
+</div>
