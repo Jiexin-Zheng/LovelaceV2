@@ -36,8 +36,15 @@
                         <button class="addbutton" onclick="EditToggle({{ forloop.counter0 }})"> 
 		                </button>	
 				</div>
-                <div class="pieceofcontent"> <!-- pieceofcontent contains the content, and the deletion button for the content which is only rendered if admin mode is on-->
+                <div class="pieceofcontent" id="pieceofcontent{{forloop.counter0}}"> <!-- pieceofcontent contains the content, and the deletion button for the content which is only rendered if admin mode is on-->
+                	{%if ContentObject.embeddedexercisemodel.ContentExerciseType %}
+                	<script>
+                		var embedded = document.getElementById("pieceofcontent{{forloop.counter0}}");
+                		embedded.style.background = "#caeaca";
+                	</script>
+                	{% endif %}
 				    <div class="pieceofcontent-admin" id="adminOnly" style="display: none;">
+				    	<div class="editingbuttons">
 					    <button class="deletebutton" onclick="DeleteContent({{ forloop.counter0 }})"> 
 		                </button>	
 					    <form action="" method="post" id="DeletionForm">
@@ -57,8 +64,11 @@
                             	]);
                             console.log(ContentForJS)
                         </script>	
+                        {% if ContentObject.textcontentmodel.ContentText %}
 						<button class="editcontentbutton" onclick="EditContent({{ forloop.counter0}}, ContentForJS)"> 
 	                    </button>
+	                    {% endif %}
+	               		</div>
 					</div>
 						{% if not ContentObject.embeddedexercisemodel.ContentExerciseType %}
 						<div class="pieceofcontent-everyone"> <!-- This part renders the piece of content from the list that is currently contained in ContentObject of the for loop. The way the content is rendered is handled with if statements, for example if its image content then in the  current implementation the ContentText field of ContentObject will be "NoText" which means the if statement will be false, thus for image content no text is rendered-->
@@ -125,8 +135,10 @@
 		          </button>	
 				  <button class="imageeditbutton" onclick="FormForContentToggle(imageform)" >
 		          </button>	
+		          <!--
 		          <button class="fileeditbutton" onclick="FormForContentToggle(fileform)" >
 		          </button>	
+		     	  -->
 		          <button class="fileeditbutton" onclick="FormForContentToggle(exampleexerciseform)" >
 		          </button>	
 			      </div>

@@ -792,9 +792,16 @@ div.slotforcontent {
 	transition: opacity 2s ease-in;
 }
 
+.editingbuttons {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+}
+
 
 .addbutton {
   background: url("smallplussign.png");
+  display: flex;
   background-position: center;
   border: none;
   cursor: pointer;
@@ -802,22 +809,25 @@ div.slotforcontent {
   position: relative;
   width: 40px;
   height: 40px;
-  float: center;
+  padding: 15px;
+  float: left;
   border-radius: 5px;
 }
 
 .editcontentbutton {
   background: url("editsign.png");
   background-position: center;
+  display: flex;
   border: none;
   cursor: pointer;
-  padding: 5px;
+  padding: 15px;
   opacity: 1.0;
   position: relative;
   width: 40px;
   height: 40px;
-  float: center-left;
+  float: right;
   border-radius: 5px;
+  margin: 3px;
 }
 
 div.question {
@@ -857,8 +867,9 @@ div.embedded-page {
   position: relative;
   width: 40px;
   height: 40px;
-  float: center-right;
+  float: right;
   border-radius: 5px;
+  margin: 3px;
 }
 
 .texteditbutton {

@@ -1,6 +1,15 @@
 from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
+import os
+from django.core.files.storage import FileSystemStorage
+
+class FileOverwriteStorage(FileSystemStorage):
+    def get_available_name(self, name, max_length = 100):
+        if self.exists(name):
+            os.remove(os.path.join(name))
+        return name
+
 
 class LectureContent(models.Model):   # A Database model for the content on the page (Should probably be turned into a parent class with only Parent, index and content type)
     Parent = models.CharField(max_length=100,) # Parent field pointing to the lecture/course that the content is part of
@@ -14,7 +23,7 @@ class TextContentModel(LectureContent):
 	
 class ImageContentModel(LectureContent):
     ContentImageTitle = models.CharField(max_length=100,)
-    ContentImageFile = models.ImageField(upload_to="static")
+    ContentImageFile = models.ImageField(upload_to="static", storage= FileOverwriteStorage(), max_length= 100,)
     ContentImageCaption = models.CharField(max_length=100,)
     def __str__(self): #A function that prints the queryset in shell
         string = self.ContentImageTitle + self.ContentImageFile.url
