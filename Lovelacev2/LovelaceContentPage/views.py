@@ -165,10 +165,8 @@ def handleexerciseform(exampleexerciseform, SortedLectureContentObjects, Tempora
         content = EmbeddedExerciseModel(Parent = TemporaryCurrentLecture, Index = enteredindex, ContentType = "EmbeddedExercise", ContentExerciseText = cleanexercisetextparsed, ContentExerciseTextNotParsed = cleanexercisetext, ContentExerciseType = cleanexercisetype)
         content.save()            
     elif editmodeexercise == "True":
-        temporaryobj = SortedLectureContentObjects.get(Parent = TemporaryCurrentLecture, Index = enteredindex)
-        tempfile = temporaryobj.imagecontentmodel.ContentFile
         SortedLectureContentObjects.filter(Parent = TemporaryCurrentLecture, Index = enteredindex).delete()
-        newcontent = FileContentModel(Parent = TemporaryCurrentLecture, Index = enteredindex, ContentType = "File", ContentFileTitle = filetitle, ContentFile = tempfile)
+        newcontent = EmbeddedExerciseModel(Parent = TemporaryCurrentLecture, Index = enteredindex, ContentType = "EmbeddedExercise", ContentExerciseText = cleanexercisetextparsed, ContentExerciseTextNotParsed = cleanexercisetext, ContentExerciseType = cleanexercisetype)
         newcontent.save() #content is saved into database
     return HttpResponseRedirect("/LovelaceContentPage/")
 

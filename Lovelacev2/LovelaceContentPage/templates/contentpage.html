@@ -61,10 +61,12 @@
                             	"{{ ContentObject.imagecontentmodel.ContentImageTitle|striptags|escapejs }}",
 								"{{ ContentObject.imagecontentmodel.ContentImageCaption|striptags|escapejs }}",                            	
 								"{{ ContentObject.imagecontentmodel.ContentImageFile|striptags|escapejs }}",
+								"{{ ContentObject.embeddedexercisemodel.ContentExerciseTextNotParsed|striptags|escapejs }}",
+								"{{ ContentObject.embeddedexercisemodel.ContentExerciseType|striptags|escapejs }}",
                             	]);
                             console.log(ContentForJS)
                         </script>	
-                        {% if ContentObject.textcontentmodel.ContentText %}
+                        {% if ContentObject.textcontentmodel.ContentText or ContentObject.embeddedexercisemodel.ContentExerciseType %}
 						<button class="editcontentbutton" onclick="EditContent({{ forloop.counter0}}, ContentForJS)"> 
 	                    </button>
 	                    {% endif %}
